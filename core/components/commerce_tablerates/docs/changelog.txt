@@ -1,4 +1,4 @@
-++ TableRates for Commerce 0.1.0-pl
-++ Released on
+++ TableRates for Commerce 1.0.0-rc1
+++ Released on 2017-12-28
 ++++++++++++++++++++++++++
 - First release
