@@ -328,6 +328,9 @@ class TableRatesShippingMethod extends comShippingMethod
         }
         $address = $order->getShippingAddress();
         if (!$address) {
+            $address = $order->getExpectedAddress();
+        }
+        if (!$address) {
             return parent::getPriceForShipment($shipment);
         }
 
