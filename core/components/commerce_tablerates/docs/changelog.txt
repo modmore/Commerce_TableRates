@@ -1,3 +1,8 @@
+++ TableRates for Commerce 1.1.0-pl
+++ Released on 2018-10-19
+++++++++++++++++++++++++++
+- Make the weight unit, used in the provided CSV, configurable instead of hardcoded to grams [#1]
+
 ++ TableRates for Commerce 1.0.0-pl
 ++ Released on 2018-02-02
 ++++++++++++++++++++++++++
