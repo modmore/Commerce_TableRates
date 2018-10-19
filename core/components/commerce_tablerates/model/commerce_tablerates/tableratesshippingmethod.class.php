@@ -370,8 +370,8 @@ class TableRatesShippingMethod extends comShippingMethod
         $price = 0;
         foreach ($options as $option) {
             try {
-                $optWeight = new Mass((float)$option['condition'], $this->getProperty('weight_unit'));
-                if ($weight->subtract($optWeight)->toUnit($this->getProperty('weight_unit')) > 0) {
+                $optWeight = new Mass((float)$option['condition'], $this->getProperty('weight_unit', 'g'));
+                if ($weight->subtract($optWeight)->toUnit($this->getProperty('weight_unit', 'g')) > 0) {
                     $price = (int)((float)$option['price'] * 100);
                 }
             }
