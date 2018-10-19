@@ -2,12 +2,13 @@
 use modmore\Commerce\Admin\Widgets\Form\SectionField;
 use modmore\Commerce\Admin\Widgets\Form\SelectField;
 use modmore\Commerce\Admin\Widgets\Form\TextareaField;
+use modmore\Commerce\Admin\Widgets\Form\WeightUnitField;
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 
 /**
  * TableRates extension for Commerce
  *
- * Copyright 2017 by Mark Hamstra <mark@modmore.com>
+ * Copyright 2018 by Mark Hamstra <mark@modmore.com>
  *
  * This file is meant to be used with Commerce by modmore. A valid Commerce license is required.
  *
@@ -301,6 +302,11 @@ class TableRatesShippingMethod extends comShippingMethod
 //                ]
             ]
         ]);
+        $fields[] = new WeightUnitField($this->commerce, [
+            'label' => $this->adapter->lexicon('commerce.weight_unit'),
+            'name' => 'properties[weight_unit]',
+            'value' => $this->getProperty('weight_unit', 'g')
+        ]);
         $fields[] = new TextareaField($this->commerce, [
             'label' => $this->adapter->lexicon('commerce_tablerates.csvdata'),
             'description' => $this->adapter->lexicon('commerce_tablerates.csvdata.description'),
@@ -364,8 +370,8 @@ class TableRatesShippingMethod extends comShippingMethod
         $price = 0;
         foreach ($options as $option) {
             try {
-                $optWeight = new Mass((float)$option['condition'], 'g');
-                if ($weight->subtract($optWeight)->toUnit('g') > 0) {
+                $optWeight = new Mass((float)$option['condition'], $this->getProperty('weight_unit'));
+                if ($weight->subtract($optWeight)->toUnit($this->getProperty('weight_unit')) > 0) {
                     $price = (int)((float)$option['price'] * 100);
                 }
             }
