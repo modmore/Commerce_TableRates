@@ -1,14 +1,23 @@
-++ TableRates for Commerce 1.1.0-pl
-++ Released on 2018-10-19
-++++++++++++++++++++++++++
+TableRates for Commerce 1.1.1-pl
+--------------------------------
+Released on 2019-02-26
+
+- Change form definition to use a Tab instead of a SectionField, fixing issue with the display introduced in 0.11
+
+TableRates for Commerce 1.1.0-pl
+--------------------------------
+Released on 2018-10-19
+
 - Make the weight unit, used in the provided CSV, configurable instead of hardcoded to grams [#1]
 
-++ TableRates for Commerce 1.0.0-pl
-++ Released on 2018-02-02
-++++++++++++++++++++++++++
+TableRates for Commerce 1.0.0-pl
+--------------------------------
+Released on 2018-02-02
+
 - Official release, with new translations
 
-++ TableRates for Commerce 1.0.0-rc1
-++ Released on 2017-12-28
-++++++++++++++++++++++++++
+TableRates for Commerce 1.0.0-rc1
+---------------------------------
+Released on 2017-12-28
+
 - First release

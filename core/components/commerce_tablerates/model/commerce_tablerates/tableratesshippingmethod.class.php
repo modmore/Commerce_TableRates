@@ -1,6 +1,7 @@
 <?php
-use modmore\Commerce\Admin\Widgets\Form\SectionField;
+
 use modmore\Commerce\Admin\Widgets\Form\SelectField;
+use modmore\Commerce\Admin\Widgets\Form\Tab;
 use modmore\Commerce\Admin\Widgets\Form\TextareaField;
 use modmore\Commerce\Admin\Widgets\Form\WeightUnitField;
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
@@ -280,7 +281,7 @@ class TableRatesShippingMethod extends comShippingMethod
     {
         $fields = [];
 
-        $fields[] = new SectionField($this->commerce, [
+        $fields[] = new Tab($this->commerce, [
             'label' => $this->adapter->lexicon('commerce_tablerates.section_title')
         ]);
         $fields[] = new SelectField($this->commerce, [
