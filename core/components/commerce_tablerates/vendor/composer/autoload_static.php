@@ -20,11 +20,16 @@ class ComposerStaticInit09277f9d0ad65f5967501da69e2e6a27
         ),
     );
 
+    public static $classMap = array (
+        'modmore\\CommerceTableRates\\Modules\\TableRates' => __DIR__ . '/../..' . '/src/Modules/TableRates.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit09277f9d0ad65f5967501da69e2e6a27::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit09277f9d0ad65f5967501da69e2e6a27::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit09277f9d0ad65f5967501da69e2e6a27::$classMap;
 
         }, null, ClassLoader::class);
     }

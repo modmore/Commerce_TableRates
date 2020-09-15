@@ -23,8 +23,8 @@ if (!defined('MOREPROVIDER_BUILD')) {
     /* define version */
     define('PKG_NAME','Commerce_TableRates');
     define('PKG_NAMESPACE','commerce_tablerates');
-    define('PKG_VERSION','1.0.0');
-    define('PKG_RELEASE','rc2');
+    define('PKG_VERSION','1.1.2');
+    define('PKG_RELEASE','pl');
 
     /* load modx */
     require_once dirname(dirname(__FILE__)) . '/config.core.php';

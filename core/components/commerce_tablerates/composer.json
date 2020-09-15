@@ -1,10 +1,10 @@
 {
-  "name": "modmore/commerce_randomlypricedproduct",
-  "description": "Example custom product for Commerce",
+  "name": "modmore/commerce_tablerates",
+  "description": "Shipping method for Commerce that lets you define CSV data.",
   "license": "MIT",
   "config": {
     "platform": {
-      "php": "5.5.0"
+      "php": "7.1.0"
     }
   },
   "require": {

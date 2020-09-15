@@ -6,4 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'modmore\\CommerceTableRates\\Modules\\TableRates' => $baseDir . '/src/Modules/TableRates.php',
 );
