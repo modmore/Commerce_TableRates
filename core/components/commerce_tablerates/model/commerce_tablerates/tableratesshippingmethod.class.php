@@ -407,10 +407,23 @@ class TableRatesShippingMethod extends comShippingMethod
             if ($state !== $actualState && $state !== '*') {
                 continue;
             }
-            if ($zip !== $actualZip && $zip !== '*') {
+            // explode by |, check for * suffix
+            $zipCodes = array_map('trim', explode('|', $zip));
+            $hasZipMatch = false;
+            foreach ($zipCodes as $zipCode) {
+                if ($zipCode === $actualZip || $zipCode === '*') {
+                    $hasZipMatch = true;
+                }
+                elseif (substr($zipCode, -1) === '*') {
+                    $firstPart = substr($actualZip, 0, strlen($zipCode) - 1);
+                    if (strpos($zipCode, $firstPart) === 0) {
+                        $hasZipMatch = true;
+                    }
+                }
+            }
+            if (!$hasZipMatch) {
                 continue;
             }
-
             // Add to the return array
             $options[] = [
                 'country' => $countryCode,

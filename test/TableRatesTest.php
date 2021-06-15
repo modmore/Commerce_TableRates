@@ -50,6 +50,7 @@ MCO,*,*,889.0000,21.4000
 NLD,*,*,0.0000,3.2000
 NLD,Friesland,*,389.0000,6.0000
 NLD,Friesland,8926PR,889.0000,9.9000
+NLD,Friesland,892*|891*,0.0000,12.9000
 POL,*,*,0.0000,3.2000
 POL,*,*,389.0000,6.0000
 POL,*,*,889.0000,21.4000
@@ -118,7 +119,8 @@ SWE,*,*,1651.0000,27.0000';
     {
         /** @var \TableRatesShippingMethod $method */
         $method = $this->adapter->newObject('TableRatesShippingMethod');
-        self::assertEquals($expected, $method->getMatchingOptions($csv, $country, $state, $zip));
+        $actual = $method->getMatchingOptions($csv, $country, $state, $zip);
+        self::assertEquals($expected, $actual);
     }
 
     public function providerGetMatchingOptions()
@@ -194,6 +196,37 @@ SWE,*,*,1651.0000,27.0000';
                         'zip' => '8926PR',
                         'condition' => '889.0000',
                         'price' => '9.9000'
+                    ],
+                    [
+                        'country' => 'NL',
+                        'state' => 'Friesland',
+                        'zip' => '892*|891*',
+                        'condition' => '0.0000',
+                        'price' => '12.9000'
+                    ],
+                ]
+            ],[
+                self::$csv, 'NL', 'Friesland', '8921AB', [
+                    [
+                        'country' => 'NL',
+                        'state' => '*',
+                        'zip' => '*',
+                        'condition' => '0.0000',
+                        'price' => '3.2000'
+                    ],
+                    [
+                        'country' => 'NL',
+                        'state' => 'Friesland',
+                        'zip' => '*',
+                        'condition' => '389.0000',
+                        'price' => '6.0000'
+                    ],
+                    [
+                        'country' => 'NL',
+                        'state' => 'Friesland',
+                        'zip' => '892*|891*',
+                        'condition' => '0.0000',
+                        'price' => '12.9000'
                     ],
                 ]
             ]
