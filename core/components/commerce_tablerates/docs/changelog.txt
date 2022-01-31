@@ -1,5 +1,11 @@
 TableRates for Commerce 1.2.0-pl
 --------------------------------
+Released on 2022-01-31
+
+- Remove vendor directory from version control
+
+TableRates for Commerce 1.2.0-dev1
+--------------------------------
 Released on 2021-06-15
 
 - Add support for partial zipcode matches with a * suffix
