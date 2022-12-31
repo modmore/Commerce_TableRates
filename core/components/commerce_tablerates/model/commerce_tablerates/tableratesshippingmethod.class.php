@@ -1,5 +1,6 @@
 <?php
 
+use modmore\Commerce\Admin\Widgets\Form\NumberField;
 use modmore\Commerce\Admin\Widgets\Form\SelectField;
 use modmore\Commerce\Admin\Widgets\Form\Tab;
 use modmore\Commerce\Admin\Widgets\Form\TextareaField;
@@ -315,6 +316,18 @@ class TableRatesShippingMethod extends comShippingMethod
             'value' => $this->getProperty('csvdata', ''),
         ]);
 
+        $fields[] = new NumberField($this->commerce, [
+            'name' => 'properties[min_weight]',
+            'label' => $this->adapter->lexicon('commerce.min_weight'),
+            'value' => $this->getProperty('min_weight', 0),
+        ]);
+
+        $fields[] = new NumberField($this->commerce, [
+            'name' => 'properties[max_weight]',
+            'label' => $this->adapter->lexicon('commerce.max_weight'),
+            'value' => $this->getProperty('max_weight', 0),
+        ]);
+
         return $fields;
     }
 
@@ -444,11 +457,34 @@ class TableRatesShippingMethod extends comShippingMethod
      * @param string $countryCode
      * @return string
      */
-    public function convertCountryThreeToTwo($countryCode)
+    public function convertCountryThreeToTwo(string $countryCode): string
     {
         if (array_key_exists($countryCode, self::$countryCodeThreeToTwo)) {
             return self::$countryCodeThreeToTwo[$countryCode];
         }
         return $countryCode;
+    }
+
+    public function isAvailableForShipment(comOrderShipment $shipment): bool
+    {
+        if (!parent::isAvailableForShipment($shipment)) {
+            return false;
+        }
+
+        $unit = $this->getProperty('weight_unit', 'kg');
+        $totalWeight = $shipment->getWeight();
+        $totalWeightValue = $totalWeight->toUnit($unit);
+
+        $min = $this->getProperty('min_weight');
+        if ($min > $totalWeightValue) {
+            return false;
+        }
+
+        $max = $this->getProperty('max_weight');
+        if ($max > 0 && $totalWeightValue >= $max) {
+            return false;
+        }
+
+        return true;
     }
 }
