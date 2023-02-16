@@ -449,6 +449,30 @@ class TableRatesShippingMethod extends comShippingMethod
         return $options;
     }
 
+    /**
+     * Filter a set of options by the weight condition; options should already have been filtered down by destination.
+     *
+     * @param array                                    $options
+     * @param \PhpUnitsOfMeasure\PhysicalQuantity\Mass $weight
+     *
+     * @return array
+     */
+    private function filterWeightMatchingOptions(array $options, Mass $weight) : array
+    {
+      $validOptions = [];
+      foreach ($options as $option) {
+        try {
+          $optWeight = new Mass((float)$option['condition'], $this->getProperty('weight_unit', 'g'));
+          if ($weight->subtract($optWeight)->toUnit($this->getProperty('weight_unit', 'g')) > 0) {
+            $validOptions[] = $option;
+          }
+        }
+        catch (Exception $e) {}
+      }
+
+      return $validOptions;
+    }
+
 
     /**
      * Utility to convert 3 character country codes to the 2 character country codes
