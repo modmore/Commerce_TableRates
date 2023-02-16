@@ -487,7 +487,7 @@ class TableRatesShippingMethod extends comShippingMethod
       foreach ($options as $option) {
         try {
           $optWeight = new Mass((float)$option['condition'], $this->getProperty('weight_unit', 'g'));
-          if ($weight->subtract($optWeight)->toUnit($this->getProperty('weight_unit', 'g')) > 0) {
+          if ($weight->subtract($optWeight)->toUnit($this->getProperty('weight_unit', 'g')) >= 0) {
             $validOptions[] = $option;
           }
         }
