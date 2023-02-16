@@ -509,6 +509,25 @@ class TableRatesShippingMethod extends comShippingMethod
       return $validOptions;
     }
 
+    /**
+     * Get the price value (in int form) from a set of available options
+     *
+     * @param array $options
+     *
+     * @return int
+     */
+    private function getPriceFromOptions(array $options) : int
+    {
+      $price = 0;
+      // TableRates expects to use the last option, so just get that
+      if(count($options)) {
+        $option = $options[array_key_last($options)];
+        $price = (int)((float)$option['price'] * 100);
+      }
+
+      return $price;
+    }
+
 
     /**
      * Utility to convert 3 character country codes to the 2 character country codes
