@@ -354,11 +354,7 @@ class TableRatesShippingMethod extends comShippingMethod
             return parent::getPriceForShipment($shipment);
         }
 
-        $data = $this->getProperty('csvdata');
-        $country = $address->get('country');
-        $state = $address->get('state');
-        $zip = $address->get('zip');
-        $options = $this->getDestinationOptions($data, $country, $state, $zip);
+        $options = $this->getMatchingOptions($shipment);
 
         switch ($this->getProperty('condition', 'weight')) {
             case 'weight':
@@ -394,6 +390,46 @@ class TableRatesShippingMethod extends comShippingMethod
         return $price;
     }
 
+  /**
+   * Build list of options for a shipment based on the destination and matching conditions
+   *
+   * @param \comOrderShipment $shipment
+   *
+   * @return array
+   */
+  public function getMatchingOptions(comOrderShipment $shipment) : array
+    {
+      // Grab the order and shipping address.
+      $order = $shipment->getOrder();
+      $options = [];
+      if (!$order) {
+        return $options;
+      }
+      $address = $order->getShippingAddress();
+      if (!$address) {
+        $address = $order->getExpectedAddress();
+      }
+      if (!$address) {
+        return $options;
+      }
+
+      $data = $this->getProperty('csvdata');
+      $country = $address->get('country');
+      $state = $address->get('state');
+      $zip = $address->get('zip');
+      $options = $this->getDestinationOptions($data, $country, $state, $zip);
+
+      switch ($this->getProperty('condition', 'weight')) {
+        case 'weight':
+          return $this->filterWeightMatchingOptions($options, $shipment->getWeight());
+//            case 'price':
+//                return $this->filterPriceMatchingOptions($options, $shipment->getWeight());
+//            case 'items':
+//                return $this->filterItemMatchingOptions($options, $shipment->getWeight());
+      }
+
+      return $options;
+    }
     /**
      * Filters the raw CSV $data to only return options that match the current destination.
      *
