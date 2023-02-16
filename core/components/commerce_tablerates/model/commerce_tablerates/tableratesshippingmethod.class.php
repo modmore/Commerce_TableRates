@@ -564,6 +564,9 @@ class TableRatesShippingMethod extends comShippingMethod
             return false;
         }
 
+        $options = $this->getMatchingOptions($shipment);
+        return count($options);
+
         return true;
     }
 }
