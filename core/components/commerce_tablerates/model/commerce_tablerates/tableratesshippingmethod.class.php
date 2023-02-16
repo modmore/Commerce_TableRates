@@ -358,7 +358,7 @@ class TableRatesShippingMethod extends comShippingMethod
         $country = $address->get('country');
         $state = $address->get('state');
         $zip = $address->get('zip');
-        $options = $this->getMatchingOptions($data, $country, $state, $zip);
+        $options = $this->getDestinationOptions($data, $country, $state, $zip);
 
         switch ($this->getProperty('condition', 'weight')) {
             case 'weight':
@@ -403,7 +403,7 @@ class TableRatesShippingMethod extends comShippingMethod
      * @param string $actualZip
      * @return array
      */
-    public function getMatchingOptions($data, $actualCountry, $actualState, $actualZip)
+    public function getDestinationOptions($data, $actualCountry, $actualState, $actualZip)
     {
         $options = [];
         $lines = explode("\n", $data);

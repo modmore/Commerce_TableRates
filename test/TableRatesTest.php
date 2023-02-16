@@ -119,7 +119,7 @@ SWE,*,*,1651.0000,27.0000';
     {
         /** @var \TableRatesShippingMethod $method */
         $method = $this->adapter->newObject('TableRatesShippingMethod');
-        $actual = $method->getMatchingOptions($csv, $country, $state, $zip);
+        $actual = $method->getDestinationOptions($csv, $country, $state, $zip);
         self::assertEquals($expected, $actual);
     }
 
