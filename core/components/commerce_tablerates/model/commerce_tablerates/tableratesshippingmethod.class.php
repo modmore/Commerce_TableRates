@@ -356,14 +356,14 @@ class TableRatesShippingMethod extends comShippingMethod
 
         $options = $this->getMatchingOptions($shipment);
 
-        switch ($this->getProperty('condition', 'weight')) {
-            case 'weight':
-                return $this->getMatchForWeight($options, $shipment->getWeight());
-//            case 'price':
-//                return $this->getMatchForPrice($options, $shipment->getWeight());
-//            case 'items':
-//                return $this->getMatchForItems($options, $shipment->getWeight());
+        /* TODO: In the past, not having a matching option would NOT trigger parent::getPriceForShipment; now it does. But also,
+            if there are no matching options, it won't even show up in the list anyway now. The To Do here is to make sure that's
+            what we want.
+        */
+        if(count($options)) {
+          return $this->getPriceFromOptions($options);
         }
+
         return parent::getPriceForShipment($shipment);
     }
 
