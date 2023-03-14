@@ -11,19 +11,19 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
         // Check for MODX 2.5.2 or higher
         $level = xPDO::LOG_LEVEL_INFO;
         $modxVersion = $modx->getVersionData();
-        if (version_compare($modxVersion['full_version'], '2.6.5') < 0) {
+        if (version_compare($modxVersion['full_version'], '2.8.0') < 0) {
             $level = xPDO::LOG_LEVEL_ERROR;
             $success = false;
         }
-        $modx->log($level, '- MODX Revolution 2.6.5+: ' . $modxVersion['full_version']);
+        $modx->log($level, '- MODX Revolution 2.8+: ' . $modxVersion['full_version']);
 
-        // Check for PHP 7.1 or higher
+        // Check for PHP 7.4 or higher
         $level = xPDO::LOG_LEVEL_INFO;
-        if (version_compare(PHP_VERSION, '7.1.0') < 0) {
+        if (version_compare(PHP_VERSION, '7.4.0') < 0) {
             $level = xPDO::LOG_LEVEL_ERROR;
             $success = false;
         }
-        $modx->log($level, '- PHP version 7.1+: ' . PHP_VERSION);
+        $modx->log($level, '- PHP version 7.4+: ' . PHP_VERSION);
 
         // Check for Commerce
         $corePath = $modx->getOption('commerce.core_path', null, $modx->getOption('core_path') . 'components/commerce/');
@@ -32,12 +32,12 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
         $params = ['mode' => $modx->getOption('commerce.mode'), 'isSetup' => true];
         /** @var Commerce|null $commerce */
         $commerce = $modx->getService('commerce', 'Commerce', $corePath, $params);
-        if (!$commerce) {
+        if (!$commerce || !version_compare((string)$commerce->version, '1.3.0-rc1', '>=')) {
             $level = xPDO::LOG_LEVEL_ERROR;
             $success = false;
             $installed = false;
         }
-        $modx->log($level, '- Commerce installed: ' . ($installed ? 'yes' : 'no'));
+        $modx->log($level, '- Commerce 1.3+ installed: ' . ($installed ? 'yes' : 'no'));
 
         if ($success) {
             $modx->log(xPDO::LOG_LEVEL_INFO, 'Requirements look good! Visit Extras > Commerce > Configuration > Commerce after installation to enable the module.');
