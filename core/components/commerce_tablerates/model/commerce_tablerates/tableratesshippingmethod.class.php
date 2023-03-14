@@ -346,28 +346,12 @@ class TableRatesShippingMethod extends comShippingMethod
         if (!$order) {
             return parent::getPriceForShipment($shipment);
         }
-        $address = $order->getShippingAddress();
-        if (!$address) {
-            $address = $order->getExpectedAddress();
-        }
-        if (!$address) {
-            return parent::getPriceForShipment($shipment);
+
+        $options = $this->getFilteredOptions($shipment);
+        if (count($options)) {
+            return $this->getPriceFromOptions($options);
         }
 
-        $data = $this->getProperty('csvdata');
-        $country = $address->get('country');
-        $state = $address->get('state');
-        $zip = $address->get('zip');
-        $options = $this->getMatchingOptions($data, $country, $state, $zip);
-
-        switch ($this->getProperty('condition', 'weight')) {
-            case 'weight':
-                return $this->getMatchForWeight($options, $shipment->getWeight());
-//            case 'price':
-//                return $this->getMatchForPrice($options, $shipment->getWeight());
-//            case 'items':
-//                return $this->getMatchForItems($options, $shipment->getWeight());
-        }
         return parent::getPriceForShipment($shipment);
     }
 
@@ -388,10 +372,51 @@ class TableRatesShippingMethod extends comShippingMethod
                 if ($weight->subtract($optWeight)->toUnit($this->getProperty('weight_unit', 'g')) > 0) {
                     $price = (int)((float)$option['price'] * 100);
                 }
+            } catch (Exception $e) {
             }
-            catch (Exception $e) {}
         }
+
         return $price;
+    }
+
+    /**
+     * Build list of options for a shipment based on the destination and matching conditions
+     *
+     * @param comOrderShipment $shipment
+     *
+     * @return array
+     */
+    public function getFilteredOptions(comOrderShipment $shipment): array
+    {
+        // Grab the order and shipping address.
+        $order = $shipment->getOrder();
+        if (!$order) {
+            return [];
+        }
+        $address = $order->getShippingAddress();
+        if (!$address) {
+            $address = $order->getExpectedAddress();
+        }
+        if (!$address) {
+            return [];
+        }
+
+        $data = $this->getProperty('csvdata');
+        $country = $address->get('country');
+        $state = $address->get('state');
+        $zip = $address->get('zip');
+        $options = $this->getMatchingOptions($data, $country, $state, $zip);
+
+        switch ($this->getProperty('condition', 'weight')) {
+            case 'weight':
+                return $this->filterWeightOptions($options, $shipment->getWeight());
+//            case 'price':
+//                return $this->filterPriceOptions($options, $shipment->getWeight());
+//            case 'items':
+//                return $this->filterItemOptions($options, $shipment->getWeight());
+        }
+
+        return $options;
     }
 
     /**
@@ -408,7 +433,7 @@ class TableRatesShippingMethod extends comShippingMethod
         $options = [];
         $lines = explode("\n", $data);
         foreach ($lines as $line) {
-            list($countryCode, $state, $zip, $condition, $price) = array_map('trim', explode(',', $line));
+            [$countryCode, $state, $zip, $condition, $price] = array_map('trim', explode(',', $line));
             if (strlen($countryCode) === 3) {
                 $countryCode = $this->convertCountryThreeToTwo($countryCode);
             }
@@ -426,8 +451,7 @@ class TableRatesShippingMethod extends comShippingMethod
             foreach ($zipCodes as $zipCode) {
                 if ($zipCode === $actualZip || $zipCode === '*') {
                     $hasZipMatch = true;
-                }
-                elseif (substr($zipCode, -1) === '*') {
+                } elseif (substr($zipCode, -1) === '*') {
                     $firstPart = substr($actualZip, 0, strlen($zipCode) - 1);
                     if (strpos($zipCode, $firstPart) === 0) {
                         $hasZipMatch = true;
@@ -446,7 +470,51 @@ class TableRatesShippingMethod extends comShippingMethod
                 'price' => $price
             ];
         }
+
         return $options;
+    }
+
+    /**
+     * Filter a set of options by the weight condition; options should already have been filtered down by destination.
+     *
+     * @param array $options
+     * @param Mass $weight
+     *
+     * @return array
+     */
+    private function filterWeightOptions(array $options, Mass $weight): array
+    {
+        $validOptions = [];
+        foreach ($options as $option) {
+            try {
+                $optWeight = new Mass((float)$option['condition'], $this->getProperty('weight_unit', 'g'));
+                if ($weight->subtract($optWeight)->toUnit($this->getProperty('weight_unit', 'g')) >= 0) {
+                    $validOptions[] = $option;
+                }
+            } catch (Exception $e) {
+            }
+        }
+
+        return $validOptions;
+    }
+
+    /**
+     * Get the price value (in int form) from a set of available options
+     *
+     * @param array $options
+     *
+     * @return int
+     */
+    private function getPriceFromOptions(array $options): int
+    {
+        $price = 0;
+        // TableRates expects to use the last option, so just get that
+        if (count($options)) {
+            $option = $options[array_key_last($options)];
+            $price = (int)((float)$option['price'] * 100);
+        }
+
+        return $price;
     }
 
 
@@ -462,6 +530,7 @@ class TableRatesShippingMethod extends comShippingMethod
         if (array_key_exists($countryCode, self::$countryCodeThreeToTwo)) {
             return self::$countryCodeThreeToTwo[$countryCode];
         }
+
         return $countryCode;
     }
 
@@ -485,6 +554,8 @@ class TableRatesShippingMethod extends comShippingMethod
             return false;
         }
 
-        return true;
+        $options = $this->getFilteredOptions($shipment);
+
+        return count($options);
     }
 }
